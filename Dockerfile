@@ -6,7 +6,8 @@ RUN rm /etc/nginx/conf.d/default.conf
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY security-headers.inc /etc/nginx/conf.d/security-headers.inc
 
-# Copia o site
+# Copia o site (apaga antes a página "Welcome to nginx!" que vem na imagem)
+RUN rm -rf /usr/share/nginx/html/*
 COPY public/ /usr/share/nginx/html/
 RUN rm -f /usr/share/nginx/html/.gitkeep
 
