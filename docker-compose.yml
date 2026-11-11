@@ -1,8 +1,19 @@
 services:
   jawk-site-sobre:
-    # Imagem publicada automaticamente pelo GitHub Actions no Docker Hub
-    image: macega/jawk-site-sobre:latest
+    # Imagem publicada automaticamente pelo GitHub Actions no GitHub Container Registry
+    image: ghcr.io/macega/jawk-site-sobre:latest
     container_name: jawk-site-sobre
     restart: unless-stopped
     ports:
       - "8096:80"    # O Nginx Proxy Manager aponta jawk.com.br para esta porta
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+
+  # Verifica a imagem a cada 60 s e recria o container quando muda (só os que têm o label acima)
+  watchtower:
+    image: nickfedor/watchtower:latest
+    container_name: watchtower-jawk-site-sobre
+    restart: unless-stopped
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    command: --label-enable --interval 60 --cleanup

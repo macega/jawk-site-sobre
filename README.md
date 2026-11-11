@@ -11,7 +11,7 @@
 | Linguagem / stack | HTML + CSS puro, servido por Nginx 1.27 (alpine) |
 | IDE | VS Code |
 | Banco de dados | Nenhum |
-| Docker | Sim (`nginx:1.27-alpine`, porta 8096 no servidor) |
+| Docker | Sim (`nginx:1.27-alpine`, porta 8096 no servidor, atualizado pelo Watchtower) |
 | Repositório | https://github.com/macega/jawk-site-sobre |
 | Último commit | _(preencher)_ |
 
@@ -52,15 +52,22 @@ docker run --rm -p 8096:80 jawk-site-sobre:latest
 ### Deploy no servidor
 
 1. Push na `main` dispara o GitHub Actions (`.github/workflows/deploy.yml`), que publica
-   `macega/jawk-site-sobre:latest` no Docker Hub e chama o webhook do Portainer.
-2. Primeira vez: no Portainer → **Stacks** → **Add Stack**, colar o `docker-compose.yml` e ativar o webhook
-   da stack (a URL vai no secret `PORTAINER_WEBHOOK_URL`).
-3. No Nginx Proxy Manager, apontar `jawk.com.br` e `www.jawk.com.br` para a porta `8096`, com SSL do Let's Encrypt.
+   `ghcr.io/macega/jawk-site-sobre:latest` no GitHub Container Registry (usa o `GITHUB_TOKEN`, sem secrets).
+2. No servidor, o Watchtower (no `docker-compose.yml`) verifica a imagem a cada 60 s e recria o container
+   quando ela muda.
+3. Primeira vez, depois do primeiro build:
+   - GitHub → **Packages** → `jawk-site-sobre` → **Package settings** → mudar a visibilidade para **Public**.
+   - No servidor:
+     ```bash
+     mkdir -p ~/jawk-site-sobre && cd ~/jawk-site-sobre
+     curl -fsSLO https://raw.githubusercontent.com/macega/jawk-site-sobre/main/docker-compose.yml
+     docker compose up -d
+     ```
+4. No Nginx Proxy Manager, apontar `jawk.com.br` e `www.jawk.com.br` para a porta `8096`, com SSL do Let's Encrypt.
 
 ## Configuração
 
-- Secrets do repositório no GitHub (Settings → Secrets → Actions):
-  `DOCKERHUB_USERNAME`, `DOCKERHUB_TOKEN`, `PORTAINER_WEBHOOK_URL`.
+- Nenhum secret no GitHub: o workflow publica no ghcr.io com o `GITHUB_TOKEN` automático.
 - `nginx.conf`: aceita URLs sem `.html` (`/sobre` serve `sobre.html`) e devolve 404 para página inexistente.
 - `security-headers.inc`: headers de segurança, incluídos em cada `location` (um `add_header` dentro de
   `location` anula os do `server`).
@@ -73,7 +80,7 @@ public/                  páginas do site (copiadas para /usr/share/nginx/html)
 nginx.conf               config do Nginx
 security-headers.inc     headers de segurança
 Dockerfile               imagem nginx:1.27-alpine
-docker-compose.yml       stack do Portainer (porta 8096)
+docker-compose.yml       site (porta 8096) + Watchtower para atualização automática
 .github/workflows/       build e deploy automático
 ```
 
@@ -87,3 +94,4 @@ docker-compose.yml       stack do Portainer (porta 8096)
 |---|---|
 | 2026-11-11 | Estrutura inicial e plano do site |
 | 2026-11-11 | Docker (Nginx), compose e deploy via GitHub Actions + Portainer |
+| 2026-11-11 | Deploy trocado para GHCR + Watchtower (sem Portainer e sem secrets) |
