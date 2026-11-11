@@ -5,7 +5,7 @@ services:
     container_name: jawk-site-sobre
     restart: unless-stopped
     ports:
-      - "8096:80"    # O Nginx Proxy Manager aponta jawk.com.br para esta porta
+      - "8001:80"    # O Nginx Proxy Manager aponta jawk.com.br para esta porta
     labels:
       - com.centurylinklabs.watchtower.enable=true
 

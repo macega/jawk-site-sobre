@@ -11,7 +11,7 @@
 | Linguagem / stack | HTML + CSS puro, servido por Nginx 1.27 (alpine) |
 | IDE | VS Code |
 | Banco de dados | Nenhum |
-| Docker | Sim (`nginx:1.27-alpine`, porta 8096 no servidor, atualizado pelo Watchtower) |
+| Docker | Sim (`nginx:1.27-alpine`, porta 8001 no servidor, atualizado pelo Watchtower) |
 | Repositório | https://github.com/macega/jawk-site-sobre |
 | Último commit | _(preencher)_ |
 
@@ -45,8 +45,8 @@ Regras:
 
 ```bash
 docker build -t jawk-site-sobre:latest .
-docker run --rm -p 8096:80 jawk-site-sobre:latest
-# Acesse: http://localhost:8096
+docker run --rm -p 8001:80 jawk-site-sobre:latest
+# Acesse: http://localhost:8001
 ```
 
 ### Deploy no servidor
@@ -63,7 +63,7 @@ docker run --rm -p 8096:80 jawk-site-sobre:latest
      curl -fsSLO https://raw.githubusercontent.com/macega/jawk-site-sobre/main/docker-compose.yml
      docker compose up -d
      ```
-4. No Nginx Proxy Manager, apontar `jawk.com.br` e `www.jawk.com.br` para a porta `8096`, com SSL do Let's Encrypt.
+4. No Nginx Proxy Manager, apontar `jawk.com.br` e `www.jawk.com.br` para a porta `8001`, com SSL do Let's Encrypt.
 
 ## Configuração
 
@@ -80,7 +80,7 @@ public/                  páginas do site (copiadas para /usr/share/nginx/html)
 nginx.conf               config do Nginx
 security-headers.inc     headers de segurança
 Dockerfile               imagem nginx:1.27-alpine
-docker-compose.yml       site (porta 8096) + Watchtower para atualização automática
+docker-compose.yml       site (porta 8001) + Watchtower para atualização automática
 .github/workflows/       build e deploy automático
 ```
 
