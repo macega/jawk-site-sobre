@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JAWK Tradutor · Projetos · Juliano Alves Medina</title>
+  <meta name="description" content="JAWK Tradutor: app para Windows que lê o chat do World of Warcraft: Forever direto da tela com OCR e traduz as mensagens para português em tempo real. Feito em C# .NET 8 e Lua.">
+  <link rel="canonical" href="https://jawk.com.br/projetos/jawk-tradutor">
+  <meta name="theme-color" content="#0a0a0f">
+  <meta name="google-adsense-account" content="ca-pub-3167777039129239">
+  <meta property="og:type" content="article">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:site_name" content="Juliano Alves Medina">
+  <meta property="og:title" content="JAWK Tradutor · tradução do chat do WoW em tempo real">
+  <meta property="og:description" content="App para Windows que lê o chat do jogo com OCR e traduz para português.">
+  <meta property="og:url" content="https://jawk.com.br/projetos/jawk-tradutor">
+  <meta property="og:image" content="https://jawk.com.br/img/projetos/jawk-tradutor/chat-traduzido.webp">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="/"><img src="/favicon.svg" alt="" width="30" height="30">Juliano Alves Medina</a>
+      <nav class="site-nav" aria-label="Principal">
+        <ul>
+          <li><a href="/">Início</a></li>
+          <li><a href="/#projetos">Projetos</a></li>
+          <li><a href="/curriculo">Currículo</a></li>
+          <li><a href="/#contato">Contato</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="conteudo">
+    <section>
+      <div class="container">
+        <p class="breadcrumb"><a href="/">Início</a> / <a href="/#projetos">Projetos</a> / JAWK Tradutor</p>
+        <h1>JAWK <span class="grad-text">Tradutor</span></h1>
+        <p class="lead">Traduz o chat do World of Warcraft: Forever para português enquanto você joga. Um app no PC lê as mensagens direto da tela, de qualquer idioma, e um addon opcional explica as gírias dentro do jogo.</p>
+        <div class="actions">
+          <a class="btn btn-primary" href="https://tradutor.jawk.com.br/">Baixar grátis em tradutor.jawk.com.br</a>
+        </div>
+        <dl class="facts">
+          <div><dt>Tipo</dt><dd>App desktop + addon do jogo</dd></div>
+          <div><dt>Plataforma</dt><dd>Windows 10 (2004) ou mais novo</dd></div>
+          <div><dt>Tecnologia</dt><dd>C# .NET 8, WPF, OCR do Windows, Lua</dd></div>
+          <div><dt>Situação</dt><dd>Ativo, com download gratuito</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section>
+      <div class="container prose">
+        <h2>O problema</h2>
+        <p>Os servidores do WoW Forever reúnem jogadores do mundo todo, e o chat mistura espanhol, inglês, russo e outras línguas, cheio de abreviações como LFM, WTS e OOM. Quem fala só português perde convites de grupo, negociações e avisos.</p>
+        <p>Traduzir dentro do jogo não é possível: os addons do WoW não acessam a internet. E o jogo só grava o arquivo de log do chat quando o personagem sai, então o log não serve para traduzir na hora.</p>
+
+        <h2>A solução: ler a tela</h2>
+        <p>O app tira, a cada segundo, um print <strong>só da área do chat</strong>, que o próprio usuário marca uma vez com um retângulo. O texto é reconhecido pelo OCR que já vem no Windows, as gírias são expandidas e a mensagem segue para o tradutor (Google, sem cadastro, ou DeepL, com chave gratuita).</p>
+        <p>As mensagens aparecem no app do mesmo jeito que no jogo: canal, nome do personagem na cor da classe e texto. As cores são medidas no próprio print. O original aparece apagado e é trocado pela tradução em um ou dois segundos. Passando o mouse, dá para ver o texto original, o idioma detectado e as gírias encontradas.</p>
+        <p>A janela pode ficar normal ou sobreposta ao jogo, sempre por cima e semitransparente. Ao fechar, o app vai para a bandeja do Windows e continua traduzindo.</p>
+
+        <h2>Acompanha o jogo sozinho</h2>
+        <ul>
+          <li>Quando o jogo abre, a janela aparece sem roubar o foco e a leitura volta.</li>
+          <li>Quando o jogo fecha ou é minimizado, o app para de tirar prints e se esconde.</li>
+          <li>Com outro programa na frente (navegador, editor), a tela não é lida, para não traduzir o texto errado.</li>
+          <li>Mensagens repetidas, como os anúncios do canal de comércio, ficam em cache e não são traduzidas de novo. Mensagens já em português são ignoradas.</li>
+        </ul>
+
+        <h2>O addon</h2>
+        <p>O addon em Lua é opcional e não conversa com o app. Dentro do jogo, ele destaca as gírias (LFM, WTS, BRD, OOM…) e mostra o significado ao passar o mouse. Também traduz palavras soltas em inglês com um dicionário próprio. O app instala e atualiza o addon com um clique, a partir da pasta do jogo.</p>
+
+        <h2>Privacidade e desempenho</h2>
+        <p>Os prints ficam só na memória e são descartados logo depois do OCR. Nada é gravado em disco, e para o serviço de tradução vai apenas o texto da mensagem. Cada leitura leva cerca de 66 ms e o consumo fica em torno de 0,4% do processador lendo uma vez por segundo, medido num PC de 12 núcleos.</p>
+
+        <h2>Entrega</h2>
+        <p>O <code>.exe</code> é portátil: um arquivo só, que já leva o .NET junto, sem instalação. Uma tag de versão no GitHub dispara o GitHub Actions, que compila o app, empacota o addon e cria a release. O site <a href="https://tradutor.jawk.com.br/">tradutor.jawk.com.br</a>, feito em Node.js e rodando em Docker, detecta a release nova e troca os arquivos de download sozinho.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <h2>Tela</h2>
+        <div class="shots">
+          <figure>
+            <img src="/img/projetos/jawk-tradutor/chat-traduzido.webp" alt="Janela do JAWK Tradutor sobre o chat do jogo, com mensagens em espanhol traduzidas para português" width="503" height="368" loading="lazy">
+            <figcaption>A janela do app em cima do chat do jogo: as mensagens em espanhol aparecem traduzidas para português, com o original logo abaixo.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <nav class="pager" aria-label="Outros projetos">
+          <a href="/projetos/broadcast-ftp-ingest"><small>← Anterior</small>Broadcast FTP Ingest</a>
+          <a class="next" href="/projetos/portaria-plus"><small>Próximo →</small>Portaria Plus</a>
+        </nav>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 JAWK Digital Group</p>
+      <ul>
+        <li><a href="/curriculo">Currículo</a></li>
+        <li><a href="https://tradutor.jawk.com.br/">JAWK Tradutor</a></li>
+        <li><a href="https://legal.jawk.com.br/">Política de Privacidade</a></li>
+      </ul>
+    </div>
+  </footer>
+</body>
+</html>

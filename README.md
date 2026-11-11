@@ -7,13 +7,13 @@
 | Item | Detalhe |
 |---|---|
 | Cliente | JAWK Digital Group |
-| Status | Em criação |
+| Status | Pronto para publicar |
 | Linguagem / stack | HTML + CSS puro, servido por Nginx 1.27 (alpine) |
 | IDE | VS Code |
 | Banco de dados | Nenhum |
 | Docker | Sim (`nginx:1.27-alpine`, porta 8001 no servidor, atualizado pelo Watchtower) |
 | Repositório | https://github.com/macega/jawk-site-sobre |
-| Último commit | _(preencher)_ |
+| Último commit | 2026-11-11 |
 
 ## Objetivo
 
@@ -28,16 +28,33 @@ Regras:
 - Várias páginas com texto original, navegação funcionando e nada "em construção".
 - Publicar o site **antes** de pedir a análise do AdSense.
 
-## Páginas planejadas
+## Páginas
 
-- [ ] Início (`public/index.html`) — apresentação e lista de projetos
-- [ ] Sobre (`public/sobre.html`) — currículo
-- [ ] Página de erro (`public/404.html`)
-- [ ] Uma página por projeto: o que faz, tecnologia usada, prints e link para o site
-  - [ ] JAWK Tradutor (`https://tradutor.jawk.com.br/`)
-  - [ ] Portaria Plus
-  - [ ] _(outros)_
-- [ ] Link para a Política de Privacidade em `https://legal.jawk.com.br/`
+- [x] Início = Sobre (`public/index.html`): foto, resumo, o que eu faço, cards dos projetos e contato
+- [x] Currículo (`public/curriculo.html`): experiência, formação, certificações e idiomas, com CSS de impressão (Ctrl+P → Salvar como PDF)
+- [x] Página de erro (`public/404.html`)
+- [x] Uma página por projeto (`public/projetos/`): o problema, o que faz, como funciona por dentro e prints
+  - [x] JAWK Tradutor (`/projetos/jawk-tradutor`, com link para `https://tradutor.jawk.com.br/`)
+  - [x] Portaria Plus (`/projetos/portaria-plus`)
+  - [x] JAWK Media Shrink (`/projetos/jawk-media-shrink`)
+  - [x] Broadcast FTP Ingest, o MonitorFTP (`/projetos/broadcast-ftp-ingest`)
+- [x] Link para a Política de Privacidade em `https://legal.jawk.com.br/` no rodapé de todas as páginas
+- [x] `ads.txt` e meta `google-adsense-account` (sem nenhum script de anúncio)
+
+Decisões:
+
+- Só tema escuro, paleta preto + ciano + magenta (a mesma luz das fotos). HTML e CSS puro, sem JavaScript, sem analytics e sem banner de cookies.
+- Repositórios dos projetos são privados: as páginas não têm link para o código.
+- Trabalho de cliente entra só no currículo, sem página própria.
+- Contato: `medina@jawk.com.br`, LinkedIn, GitHub, botão do WhatsApp (sem o número escrito) e Cacoal – RO. Endereço e telefone não aparecem.
+- Prints com dado real (nomes de pessoas, IPs de servidor, nome de cliente, títulos de matérias) ficam fora do site.
+
+## Imagens
+
+- Prints em `public/img/projetos/<projeto>/*.webp` (até 1600 px de largura, WebP qualidade 82).
+- Foto do perfil: `public/img/juliano.webp` (480×480) e `public/img/og-image.jpg` (1200×630, pré-visualização em redes sociais).
+- Os originais (PNG das fotos e dos prints) ficam em `referencias/`, que está no `.gitignore` e no `.dockerignore`: não vão para o GitHub nem para a imagem Docker.
+- Para trocar um print: tire a tela com dados fictícios, converta para WebP e atualize `width`/`height` no `<img>`.
 
 ## Como executar
 
@@ -68,7 +85,8 @@ docker run --rm -p 8001:80 jawk-site-sobre:latest
 ## Configuração
 
 - Nenhum secret no GitHub: o workflow publica no ghcr.io com o `GITHUB_TOKEN` automático.
-- `nginx.conf`: aceita URLs sem `.html` (`/sobre` serve `sobre.html`) e devolve 404 para página inexistente.
+- `nginx.conf`: aceita URLs sem `.html` (`/curriculo` serve `curriculo.html`), redireciona `/projetos` para `/#projetos` e devolve 404 para página inexistente.
+- Ao incluir uma página nova: atualizar `public/sitemap.xml`, o menu e o rodapé (repetidos em cada `.html`).
 - `security-headers.inc`: headers de segurança, incluídos em cada `location` (um `add_header` dentro de
   `location` anula os do `server`).
 - Arquivos sensíveis (`.env`, certificados, chaves) estão no `.gitignore` e não vão para o GitHub.
@@ -77,6 +95,13 @@ docker run --rm -p 8001:80 jawk-site-sobre:latest
 
 ```
 public/                  páginas do site (copiadas para /usr/share/nginx/html)
+  index.html             início (sobre)
+  curriculo.html         currículo
+  projetos/              uma página por projeto
+  css/site.css           estilo único do site (inclui o CSS de impressão)
+  img/                   foto, og-image e prints dos projetos
+  ads.txt, robots.txt, sitemap.xml, favicon.svg, 404.html
+referencias/             originais das fotos e prints (fora do Git e do Docker)
 nginx.conf               config do Nginx
 security-headers.inc     headers de segurança
 Dockerfile               imagem nginx:1.27-alpine
@@ -95,3 +120,4 @@ docker-compose.yml       site (porta 8001) + Watchtower para atualização autom
 | 2026-11-11 | Estrutura inicial e plano do site |
 | 2026-11-11 | Docker (Nginx), compose e deploy via GitHub Actions + Portainer |
 | 2026-11-11 | Deploy trocado para GHCR + Watchtower (sem Portainer e sem secrets) |
+| 2026-11-11 | Site completo: início, currículo, 4 páginas de projeto, 404, ads.txt, sitemap |

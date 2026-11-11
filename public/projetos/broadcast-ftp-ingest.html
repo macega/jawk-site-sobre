@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Broadcast FTP Ingest · Projetos · Juliano Alves Medina</title>
+  <meta name="description" content="Broadcast FTP Ingest: app de bandeja do Windows que monitora servidores FTP, FTPS, SFTP e pastas do Google Drive e baixa os vídeos novos para pastas organizadas por data, sem nunca repetir um arquivo. Feito em C# .NET 10.">
+  <link rel="canonical" href="https://jawk.com.br/projetos/broadcast-ftp-ingest">
+  <meta name="theme-color" content="#0a0a0f">
+  <meta name="google-adsense-account" content="ca-pub-3167777039129239">
+  <meta property="og:type" content="article">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:site_name" content="Juliano Alves Medina">
+  <meta property="og:title" content="Broadcast FTP Ingest · ingestão automática de vídeos">
+  <meta property="og:description" content="Monitora servidores FTP e pastas do Google Drive e organiza os vídeos novos por data.">
+  <meta property="og:url" content="https://jawk.com.br/projetos/broadcast-ftp-ingest">
+  <meta property="og:image" content="https://jawk.com.br/img/projetos/broadcast-ftp-ingest/configuracoes.webp">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="/"><img src="/favicon.svg" alt="" width="30" height="30">Juliano Alves Medina</a>
+      <nav class="site-nav" aria-label="Principal">
+        <ul>
+          <li><a href="/">Início</a></li>
+          <li><a href="/#projetos">Projetos</a></li>
+          <li><a href="/curriculo">Currículo</a></li>
+          <li><a href="/#contato">Contato</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="conteudo">
+    <section>
+      <div class="container">
+        <p class="breadcrumb"><a href="/">Início</a> / <a href="/#projetos">Projetos</a> / Broadcast FTP Ingest</p>
+        <h1>Broadcast FTP <span class="grad-text">Ingest</span></h1>
+        <p class="lead">Um app que fica na bandeja do Windows vigiando servidores FTP, FTPS e SFTP e pastas do Google Drive. Quando chega um vídeo novo, ele baixa para uma pasta organizada por data e avisa. Nunca baixa o mesmo arquivo duas vezes.</p>
+        <dl class="facts">
+          <div><dt>Tipo</dt><dd>App de bandeja do Windows</dd></div>
+          <div><dt>Plataforma</dt><dd>Windows 10 ou mais novo</dd></div>
+          <div><dt>Tecnologia</dt><dd>C# .NET 10, WPF, FluentFTP, SSH.NET, SQLite, xUnit</dd></div>
+          <div><dt>Situação</dt><dd>Ativo</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section>
+      <div class="container prose">
+        <h2>O problema</h2>
+        <p>Emissoras e produtoras de vídeo recebem material de equipes em outras cidades por FTP ou pastas compartilhadas. Alguém precisa entrar em cada servidor várias vezes por dia, ver o que chegou, baixar e separar por data, sem esquecer nenhum arquivo e sem baixar de novo o que já foi baixado. É um trabalho repetitivo e fácil de errar.</p>
+
+        <h2>O que o app faz</h2>
+        <ul>
+          <li><strong>Monitora várias origens ao mesmo tempo:</strong> FTP, FTPS (explícito ou implícito), SFTP e pastas locais ou do Google Drive espelhado no computador.</li>
+          <li><strong>Agenda as verificações</strong> a cada X minutos ou em horários fixos, e verifica vários servidores em paralelo.</li>
+          <li><strong>Organiza por data:</strong> cada arquivo vai para <code>pasta\ano\mês\dia</code>, pela data em que foi baixado.</li>
+          <li><strong>Pensa no programa do dia seguinte:</strong> com um horário de corte (por exemplo, 12:00), o que chega depois dele, ou no fim de semana, vai direto para a pasta da próxima edição.</li>
+          <li><strong>Avisa</strong> com notificação do Windows e som quando chega material novo.</li>
+          <li><strong>Painel, histórico e logs</strong> mostram a situação de cada servidor, os downloads em andamento e tudo o que já foi recebido, com a opção de baixar um arquivo de novo.</li>
+        </ul>
+
+        <h2>Nunca repetir, nunca perder</h2>
+        <p>A decisão de baixar não depende da data do arquivo no servidor, que muitas vezes está errada. O app mantém um registro próprio de tudo o que já viu em cada servidor. Arquivo novo é baixado, mesmo com data antiga. Arquivo já baixado nunca volta, mesmo que seja apagado da pasta local.</p>
+        <p>Na primeira verificação de um servidor, o que já estava lá é marcado como existente e não é baixado. Antes de baixar, o app espera alguns segundos e só segue se o tamanho do arquivo parou de mudar, para não pegar um upload pela metade. O download vai para um arquivo <code>.part</code>, que só é renomeado depois de conferir o tamanho. E o app nunca apaga nada do servidor remoto.</p>
+
+        <h2>Como funciona por dentro</h2>
+        <p>Escrito em C# com WPF sobre o .NET 10, com tema escuro no estilo Fluent e ícone na bandeja. FTP e FTPS usam a biblioteca FluentFTP, e SFTP usa a SSH.NET. O registro de arquivos, o histórico e as configurações ficam num banco SQLite com migrações versionadas. As senhas dos servidores são cifradas com a DPAPI do Windows, presas ao usuário. O filtro de arquivos, o agendador, o download, o ciclo de cada servidor e a montagem das pastas por data são cobertos por testes automatizados em xUnit. A distribuição é um <code>.exe</code> portátil que já leva o .NET junto.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <h2>Tela</h2>
+        <div class="shots">
+          <figure>
+            <img src="/img/projetos/broadcast-ftp-ingest/configuracoes.webp" alt="Configurações de agendamento, horário de corte da edição, download e notificações" width="1091" height="698" loading="lazy">
+            <figcaption>Configurações: intervalo ou horários fixos de verificação, período do programa, horário de corte da edição, janela de estabilização do upload e notificações.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <nav class="pager" aria-label="Outros projetos">
+          <a href="/projetos/jawk-media-shrink"><small>← Anterior</small>JAWK Media Shrink</a>
+          <a class="next" href="/projetos/jawk-tradutor"><small>Próximo →</small>JAWK Tradutor</a>
+        </nav>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 JAWK Digital Group</p>
+      <ul>
+        <li><a href="/curriculo">Currículo</a></li>
+        <li><a href="https://tradutor.jawk.com.br/">JAWK Tradutor</a></li>
+        <li><a href="https://legal.jawk.com.br/">Política de Privacidade</a></li>
+      </ul>
+    </div>
+  </footer>
+</body>
+</html>

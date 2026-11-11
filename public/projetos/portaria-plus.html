@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Portaria Plus · Projetos · Juliano Alves Medina</title>
+  <meta name="description" content="Portaria Plus: sistema de gestão de portaria para condomínios, com recebimento e entrega de encomendas, cadastro de moradores, chat e avisos. Feito em Flutter com Firebase e Cloud Functions.">
+  <link rel="canonical" href="https://jawk.com.br/projetos/portaria-plus">
+  <meta name="theme-color" content="#0a0a0f">
+  <meta name="google-adsense-account" content="ca-pub-3167777039129239">
+  <meta property="og:type" content="article">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:site_name" content="Juliano Alves Medina">
+  <meta property="og:title" content="Portaria Plus · gestão de portaria para condomínios">
+  <meta property="og:description" content="Encomendas, moradores, chat e avisos num app web e Android, feito em Flutter e Firebase.">
+  <meta property="og:url" content="https://jawk.com.br/projetos/portaria-plus">
+  <meta property="og:image" content="https://jawk.com.br/img/projetos/portaria-plus/correntistas.webp">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="/"><img src="/favicon.svg" alt="" width="30" height="30">Juliano Alves Medina</a>
+      <nav class="site-nav" aria-label="Principal">
+        <ul>
+          <li><a href="/">Início</a></li>
+          <li><a href="/#projetos">Projetos</a></li>
+          <li><a href="/curriculo">Currículo</a></li>
+          <li><a href="/#contato">Contato</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="conteudo">
+    <section>
+      <div class="container">
+        <p class="breadcrumb"><a href="/">Início</a> / <a href="/#projetos">Projetos</a> / Portaria Plus</p>
+        <h1>Portaria <span class="grad-text">Plus</span></h1>
+        <p class="lead">Gestão de portaria para condomínios. A portaria registra cada encomenda com foto da etiqueta, o morador é avisado no celular e a entrega fica registrada, junto com cadastro de moradores, chat e avisos por e-mail.</p>
+        <dl class="facts">
+          <div><dt>Tipo</dt><dd>Sistema web e app Android</dd></div>
+          <div><dt>Plataforma</dt><dd>Navegador e Android</dd></div>
+          <div><dt>Tecnologia</dt><dd>Flutter/Dart, Firebase (Auth, Firestore, Storage, Messaging), Cloud Functions em TypeScript</dd></div>
+          <div><dt>Situação</dt><dd>Em desenvolvimento</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section>
+      <div class="container prose">
+        <h2>O problema</h2>
+        <p>Em muitos condomínios, o controle de encomendas ainda é um caderno na portaria. O morador não sabe que o pacote chegou, o porteiro não sabe quem pode retirar e, quando algo some, não há registro de quem recebeu nem de quem entregou.</p>
+
+        <h2>O que o sistema faz</h2>
+        <ul>
+          <li><strong>Recebimento:</strong> o porteiro escolhe a unidade, o destinatário e a transportadora e tira a foto da etiqueta. O morador recebe uma notificação no celular.</li>
+          <li><strong>Entrega:</strong> as encomendas aguardando retirada ficam numa lista, e cada entrega é registrada com data, hora e responsável.</li>
+          <li><strong>Moradores e fornecedores:</strong> cadastro por unidade, com busca por nome, telefone, CPF, unidade ou empresa. Os contatos podem ser importados da agenda do celular, e o sistema aponta quais já existem e quais mudaram.</li>
+          <li><strong>Estrutura do condomínio:</strong> torres, blocos, ruas e quadras, inclusive condomínios mistos de prédios e casas. As unidades podem ser geradas automaticamente ou importadas de uma planilha Excel.</li>
+          <li><strong>Chat</strong> entre a portaria e os moradores, em tempo real.</li>
+          <li><strong>Autocadastro:</strong> o morador pede acesso pelo app, e o síndico ou a portaria aprova.</li>
+          <li><strong>Avisos por e-mail</strong> configuráveis por condomínio.</li>
+        </ul>
+
+        <h2>Vários condomínios, permissões e auditoria</h2>
+        <p>Um mesmo sistema atende vários condomínios, cada um com seus dados separados. Os perfis (administrador da plataforma, síndico, porteiro e morador) definem o que cada usuário pode ver e fazer. Toda tentativa de acesso negada é registrada, e a tela de auditoria mostra quem fez cada alteração.</p>
+
+        <h2>Como funciona por dentro</h2>
+        <p>O app é escrito em Flutter, com o mesmo código para a versão web e a versão Android. Login por e-mail e senha ou conta Google, pelo Firebase Authentication. Os dados ficam no Firestore e as fotos no Firebase Storage.</p>
+        <p>O app não grava diretamente as operações importantes. Registrar, avisar, entregar ou cancelar uma encomenda, enviar uma mensagem no chat e aprovar um cadastro passam por Cloud Functions em TypeScript. Elas conferem a permissão do usuário e gravam o dado e o log de auditoria na mesma transação. Assim, um usuário mal-intencionado não consegue alterar um registro pulando a interface.</p>
+        <p>O deploy é automático pelo GitHub Actions: cada push na branch de testes publica num canal de teste do Firebase Hosting, separado da produção.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <h2>Telas</h2>
+        <p class="muted">Telas do ambiente de testes, com dados fictícios.</p>
+        <div class="shots">
+          <figure>
+            <img src="/img/projetos/portaria-plus/correntistas.webp" alt="Lista de moradores e fornecedores agrupada por unidade, com busca e filtros" width="1600" height="878" loading="lazy">
+            <figcaption>Moradores e fornecedores agrupados por unidade, com busca por nome, telefone, CPF ou empresa e filtros por tipo.</figcaption>
+          </figure>
+          <div class="shots-phone">
+            <figure>
+              <img src="/img/projetos/portaria-plus/login.webp" alt="Tela de login do Portaria Plus com e-mail, senha e login com Google" width="519" height="690" loading="lazy">
+              <figcaption>Login por e-mail e senha ou conta Google, com autocadastro.</figcaption>
+            </figure>
+            <figure>
+              <img src="/img/projetos/portaria-plus/correntistas-celular.webp" alt="Lista de moradores no celular" width="397" height="824" loading="lazy">
+              <figcaption>A mesma lista no celular: o layout se adapta à tela.</figcaption>
+            </figure>
+            <figure>
+              <img src="/img/projetos/portaria-plus/estrutura-celular.webp" alt="Tela de estrutura do condomínio com ruas e torre" width="400" height="834" loading="lazy">
+              <figcaption>Estrutura de um condomínio misto, com ruas e torre, e importação por planilha.</figcaption>
+            </figure>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <nav class="pager" aria-label="Outros projetos">
+          <a href="/projetos/jawk-tradutor"><small>← Anterior</small>JAWK Tradutor</a>
+          <a class="next" href="/projetos/jawk-media-shrink"><small>Próximo →</small>JAWK Media Shrink</a>
+        </nav>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 JAWK Digital Group</p>
+      <ul>
+        <li><a href="/curriculo">Currículo</a></li>
+        <li><a href="https://tradutor.jawk.com.br/">JAWK Tradutor</a></li>
+        <li><a href="https://legal.jawk.com.br/">Política de Privacidade</a></li>
+      </ul>
+    </div>
+  </footer>
+</body>
+</html>

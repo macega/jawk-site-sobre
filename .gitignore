@@ -21,3 +21,6 @@ node_modules/
 dist/
 .vercel/
 .firebase/
+
+# Fotos e prints originais (só referência, fora do site e do GitHub)
+referencias/

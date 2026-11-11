@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>JAWK Media Shrink · Projetos · Juliano Alves Medina</title>
+  <meta name="description" content="JAWK Media Shrink: app para Windows que converte bibliotecas inteiras de vídeo em lote com o HandBrake, com fila, tags, filtros e histórico do espaço economizado. Feito em C# .NET 10 e SQLite.">
+  <link rel="canonical" href="https://jawk.com.br/projetos/jawk-media-shrink">
+  <meta name="theme-color" content="#0a0a0f">
+  <meta name="google-adsense-account" content="ca-pub-3167777039129239">
+  <meta property="og:type" content="article">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:site_name" content="Juliano Alves Medina">
+  <meta property="og:title" content="JAWK Media Shrink · conversão de vídeos em lote">
+  <meta property="og:description" content="Converte bibliotecas inteiras de vídeo com o HandBrake e mostra quanto espaço foi economizado.">
+  <meta property="og:url" content="https://jawk.com.br/projetos/jawk-media-shrink">
+  <meta property="og:image" content="https://jawk.com.br/img/projetos/jawk-media-shrink/configuracoes.webp">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/css/site.css">
+</head>
+<body>
+  <a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="/"><img src="/favicon.svg" alt="" width="30" height="30">Juliano Alves Medina</a>
+      <nav class="site-nav" aria-label="Principal">
+        <ul>
+          <li><a href="/">Início</a></li>
+          <li><a href="/#projetos">Projetos</a></li>
+          <li><a href="/curriculo">Currículo</a></li>
+          <li><a href="/#contato">Contato</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="conteudo">
+    <section>
+      <div class="container">
+        <p class="breadcrumb"><a href="/">Início</a> / <a href="/#projetos">Projetos</a> / JAWK Media Shrink</p>
+        <h1>JAWK Media <span class="grad-text">Shrink</span></h1>
+        <p class="lead">Converte bibliotecas inteiras de vídeo para arquivos menores, em lote, usando o HandBrake. Você escolhe as pastas, filtra o que quer converter e acompanha quanto espaço cada arquivo economizou.</p>
+        <dl class="facts">
+          <div><dt>Tipo</dt><dd>App desktop portátil</dd></div>
+          <div><dt>Plataforma</dt><dd>Windows</dd></div>
+          <div><dt>Tecnologia</dt><dd>C# .NET 10, WPF, HandBrakeCLI, SQLite, TagLib#</dd></div>
+          <div><dt>Situação</dt><dd>Ativo</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <section>
+      <div class="container prose">
+        <h2>O problema</h2>
+        <p>Vídeos de câmera, gravações e arquivos antigos em AVI, MOV, MPG ou MTS ocupam muito espaço. Recodificados em MP4 com um codec moderno, muitos deles ficam várias vezes menores. O HandBrake faz essa conversão muito bem, mas converter milhares de arquivos espalhados em pastas de rede, um por um, não é viável.</p>
+
+        <h2>O que o app faz</h2>
+        <ul>
+          <li><strong>Varre pastas</strong> locais, de rede (NAS, compartilhamento SMB) ou do Google Drive e lista todos os vídeos encontrados, com formato, resolução e tamanho.</li>
+          <li><strong>Filtra e organiza:</strong> busca por nome, filtros por tag, pasta de origem e formato, e paginação para lidar com milhares de vídeos.</li>
+          <li><strong>Fila de conversão</strong> que pode ser reordenada, com progresso, quadros por segundo e tempo estimado do arquivo atual.</li>
+          <li><strong>Histórico:</strong> cada conversão fica registrada com data, formato antes e depois, tamanho original, tamanho final e economia.</li>
+          <li><strong>Abas de erros e de log</strong>, para saber exatamente o que falhou e por quê.</li>
+          <li><strong>Configuração do HandBrake:</strong> preset e qualidade (RF), além dos formatos de vídeo que entram na varredura.</li>
+        </ul>
+
+        <h2>Google Drive sem sofrimento</h2>
+        <p>Converter direto numa pasta sincronizada do Google Drive faz o Drive enviar e baixar arquivos temporários sem parar. Por isso o app pode copiar o vídeo para uma pasta temporária local, converter ali e devolver ao Drive só o resultado final.</p>
+
+        <h2>Cuidados com os arquivos</h2>
+        <ul>
+          <li>Antes de converter, o app confere se tem permissão de escrita e se o arquivo não está em uso por outro programa, como um cliente de download.</li>
+          <li>Ao cancelar, o processo do HandBrake é encerrado inteiro e os arquivos temporários são apagados.</li>
+          <li>Os argumentos do HandBrake são passados um a um, sem montar texto com aspas. Assim, nomes com espaços, parênteses ou acentos não quebram a conversão.</li>
+        </ul>
+
+        <h2>Como funciona por dentro</h2>
+        <p>O app é escrito em C# com WPF sobre o .NET 10, com tema escuro próprio. Ele funciona como uma camada em volta do <code>HandBrakeCLI</code>: monta a fila, chama o conversor em segundo plano e lê o progresso da saída do processo, sem travar a interface. O histórico, as tags e as métricas ficam num banco SQLite, e as operações em lote rodam em transação. A sessão (pastas carregadas, fila e seleção) é salva automaticamente e volta como estava na próxima abertura. A distribuição é um <code>.exe</code> portátil, que já leva o .NET junto.</p>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <h2>Tela</h2>
+        <div class="shots">
+          <figure>
+            <img src="/img/projetos/jawk-media-shrink/configuracoes.webp" alt="Janela de configurações com preset do HandBrake, qualidade RF e pasta temporária do Google Drive" width="647" height="510" loading="lazy" style="max-width:647px">
+            <figcaption>Configurações: preset do HandBrake, qualidade (RF) e a pasta temporária local usada nas conversões do Google Drive.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <div class="container">
+        <nav class="pager" aria-label="Outros projetos">
+          <a href="/projetos/portaria-plus"><small>← Anterior</small>Portaria Plus</a>
+          <a class="next" href="/projetos/broadcast-ftp-ingest"><small>Próximo →</small>Broadcast FTP Ingest</a>
+        </nav>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© 2026 JAWK Digital Group</p>
+      <ul>
+        <li><a href="/curriculo">Currículo</a></li>
+        <li><a href="https://tradutor.jawk.com.br/">JAWK Tradutor</a></li>
+        <li><a href="https://legal.jawk.com.br/">Política de Privacidade</a></li>
+      </ul>
+    </div>
+  </footer>
+</body>
+</html>
